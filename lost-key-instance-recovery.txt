@@ -1,0 +1,28 @@
+steps:
+1> start an instance > name: lost_key_server > create key pairs > save .pem file > Allow SSH and HTTP
+
+2>if lost_key_server's keypair is deleted
+
+3>start another instance > name: recovery_server > create key pairs > save .pem files > Allow SSH and HTTP
+
+4>stop lost_key_server >storage > select volume ID > actions > detach
+  again, select volume ID > action > attach volume > (volume of recovery_server)
+   device name : /dev/xvda
+ 
+5>using ip address of recovery_server > loggin putty
+
+6>putty: sudo su
+mkdir -p /var/recovery_disk
+mount -o nouuid /dev/xvdf2 /var/recovery_disk
+df -h
+cat /home/ec2-user/.ssh/authorized_keys >> /var/recovery_disk/home/ec2-user/.ssh/authorized_keys
+umount /var/recovery_disk
+
+7>go to console > lost_key_server > detach volume
+ again attach volume > (lost_key_server)(stopped)
+
+device name /dev/sda1
+
+8>Instance > action > lost_key_server >ON
+  copy public ip > putty > new session > old ip + new Key > login >successfull
+   
